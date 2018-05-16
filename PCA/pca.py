@@ -31,8 +31,7 @@ class PCA (object):
             mean_vec.append(aux)
 
         return mean_vec
-    
-    #tirar duvida se o a media e da classe ou da instancia:  DONE 
+    #ajeitar para normalizar o atributo e não a instancia 
     def normalize(self, inst): 
         inst_class = inst.pop(-1)
         mean = self.mean(inst)
