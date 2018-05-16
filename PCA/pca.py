@@ -1,65 +1,68 @@
 import matplotlib.pyplot as plt
-import random
+import numpy.linalg as la
+import numpy as np
 import math
 import csv 
 
 class PCA (object): 
     def __init__(self):
         self.data = []
+        self.target = []
+        self.all_data = []
+        self.normalized_data = []
     
     def load(self, filename):
+        aux = []
         with open(filename, 'r') as dataset: 
             data = list(csv.reader(dataset))
             for inst in data: 
                 inst_class = inst.pop(-1)
+                self.target.append(inst_class)
                 row = [float(x) for x in inst]
-                row.append(inst_class)
-                self.data.append(row)
+                aux.append(row)
+                #row.append(inst_class)
+                #self.all_data.append(row)
+        print(aux)
+        self.data = np.asarray(aux)
+        
     
-    def mean_vector(self, instance):
+    def mean(self):
         all_data = []
         mean_vec = []
+        size_data = len(self.data)
         for i in range(len(self.data[0]) - 1):
             row = []
-            for j in range(len(data)): 
-                aux = data[j]
+            for j in range(len(self.data)): 
+                aux = self.data[j]
                 row.append(aux[i])
             all_data.append(row)
-        
         for x in all_data: 
-            aux = sum(x)/len(self.data)
+            aux = sum(x)/size_data
             mean_vec.append(aux)
 
         return mean_vec
     #ajeitar para normalizar o atributo e não a instancia 
-    def normalize(self, inst): 
-        inst_class = inst.pop(-1)
-        mean = self.mean(inst)
-        aux = [x-mean for x in inst]
-        aux.append(inst_class)
-        return aux
+    def normalize(self): 
+        mean_vector = self.mean()
+        for x in self.data:
+            row = [x[i] - mean_vector[i] for i in range(len(x)-1)]
+            self.normalized_data.append(row)
     
-    def variance(self, inst1, inst2): 
-        inst_class1 = inst1.pop(-1)
-        inst_class2 = inst2.pop(-1)
-        mean1 = self.inst1
-        mean2 = self.inst2
-
+    def get_covanciance_matrix(self): 
+        return np.cov(np.transpose(self.data))
     
-    def covanciance_matrix(self): 
-        for x in self.data: 
-            for y in self.data: 
+    def get_values(self): 
+        cov = self.get_covanciance_matrix()
+        eigenvalue, eigenvector = la.eig(cov)
+        return (eigenvalue, eigenvector)
 
 def main():
     pca = PCA ()
     pca.load('dataset1-1.csv')
-    i = 1
-    for x in pca.data:
-        y = pca.normalize(x)
-        print('normal', x)
-        print('normalized:', y)
-        print('-----')
-        i+= 1
-        if(i == 10): break
-
+    #pca.normalize()
+    #y = pca.mean()
+    #a = pca.normalized_data
+    print('data normalizada:', pca.get_covanciance_matrix())
+    #print('vetor medio:', y)
+    
 main()
