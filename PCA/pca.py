@@ -6,10 +6,10 @@ import csv
 
 class PCA (object): 
     def __init__(self):
-        self.data = []
-        self.target = []
-        self.all_data = []
-        self.normalized_data = []
+        self.data = []                 # ARMAZENA TODOS OS DADOS SEM A CLASSE 
+        self.target = []               # CLASSES DE CADA INSTANCIA 
+        self.all_data = []             # INSTANCIAS COM SUAS RESPECTIVAS CLASSES 
+        self.normalized_data = []      # INSTANCIAS SUBTRAIDAS DAS MEDIAS
     
     def load(self, filename):
         aux = []
@@ -20,17 +20,14 @@ class PCA (object):
                 self.target.append(inst_class)
                 row = [float(x) for x in inst]
                 aux.append(row)
-                #row.append(inst_class)
-                #self.all_data.append(row)
-        print(aux)
         self.data = np.asarray(aux)
-        
     
+    # Extrai as medias dos atributos 
     def mean(self):
         all_data = []
         mean_vec = []
         size_data = len(self.data)
-        for i in range(len(self.data[0]) - 1):
+        for i in range(len(self.data[0])):
             row = []
             for j in range(len(self.data)): 
                 aux = self.data[j]
@@ -42,16 +39,21 @@ class PCA (object):
 
         return mean_vec
 
+    #subtrai a media de toda a base de valores 
     def normalize(self): 
         mean_vector = self.mean()
+        aux = [] 
         for x in self.data:
-            row = [x[i] - mean_vector[i] for i in range(len(x)-1)]
-            self.normalized_data.append(row)
-    
-    def get_covanciance_matrix(self): 
-        return np.cov(np.transpose(self.data))
+            row = [x[i] - mean_vector[i] for i in range(len(x))]
+            aux.append(row)
+        self.normalized_data = np.asarray(aux)
 
-    #retornar ordenado 
+    #Retorna a matriz de covariancia 
+    def get_covanciance_matrix(self): 
+        aux = self.data 
+        return np.cov(np.transpose(aux))
+    
+    #retornar os autovalores e autovetores ordenado 
     def get_values(self): 
         cov = self.get_covanciance_matrix()
         eigenvalue, eigenvector = la.eig(cov)
@@ -62,18 +64,28 @@ class PCA (object):
     
     def get_evr(self, eigenvalue): 
         return eigenvalue/np.sum(eigenvalue)
-    
+
+    def hotteling_trans(self, comp_number):
+        eigenvalue, eigenvector = self.get_values()
+        eigenvector = eigenvector[:comp_number]
+        #print(np.transpose(eigenvector))
+        trans = []
+        for x in self.normalized_data: 
+            trans.append(np.dot(eigenvector, x))
+        return trans
 
 def main():
     pca = PCA ()
     pca.load('dataset1-1.csv')
-    #pca.normalize()
+    pca.normalize()
     #y = pca.mean()
     #a = pca.normalized_data
-    print('data normalizada:', pca.get_covanciance_matrix())
-    eigenvalue, eigenvector = pca.get_values()
+    #print('data normalizada:', pca.get_covanciance_matrix())
+    #eigenvalue, eigenvector = pca.get_values()
+    pca.hotteling_trans(3)
+    #print('autovalor e autovetor:', pca.get_evr(eigenvalue) )
 
-    print('autovalor e autovetor:', pca.get_evr(eigenvalue) )
-    #print('vetor medio:', y)
-    
-main()
+if __name__ == '__main__':
+	main()
+
+  
