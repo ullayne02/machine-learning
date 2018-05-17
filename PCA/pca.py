@@ -41,7 +41,7 @@ class PCA (object):
             mean_vec.append(aux)
 
         return mean_vec
-    #ajeitar para normalizar o atributo e não a instancia 
+
     def normalize(self): 
         mean_vector = self.mean()
         for x in self.data:
@@ -50,11 +50,19 @@ class PCA (object):
     
     def get_covanciance_matrix(self): 
         return np.cov(np.transpose(self.data))
-    
+
+    #retornar ordenado 
     def get_values(self): 
         cov = self.get_covanciance_matrix()
         eigenvalue, eigenvector = la.eig(cov)
-        return (eigenvalue, eigenvector)
+        ind=np.argsort(eigenvalue)[::-1] 
+        eigenvalue_dec = eigenvalue[ind]
+        eigenvector_dec = eigenvector[ind]
+        return (eigenvalue_dec, eigenvector_dec)
+    
+    def get_evr(self, eigenvalue): 
+        return eigenvalue/np.sum(eigenvalue)
+    
 
 def main():
     pca = PCA ()
@@ -63,6 +71,9 @@ def main():
     #y = pca.mean()
     #a = pca.normalized_data
     print('data normalizada:', pca.get_covanciance_matrix())
+    eigenvalue, eigenvector = pca.get_values()
+
+    print('autovalor e autovetor:', pca.get_evr(eigenvalue) )
     #print('vetor medio:', y)
     
 main()
