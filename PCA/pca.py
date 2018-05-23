@@ -1,4 +1,4 @@
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import numpy.linalg as la
 import numpy as np
 import math
@@ -59,7 +59,8 @@ class PCA (object):
         eigenvalue, eigenvector = la.eig(cov)
         ind=np.argsort(eigenvalue)[::-1] 
         eigenvalue_dec = eigenvalue[ind]
-        eigenvector_dec = eigenvector[ind]
+        eigenvector_dec = np.transpose(eigenvector)
+        eigenvector_dec = eigenvector_dec[ind]
         return (eigenvalue_dec, eigenvector_dec)
     
     def get_evr(self, eigenvalue): 
@@ -78,6 +79,9 @@ def main():
     pca = PCA ()
     pca.load('dataset1-1.csv')
     pca.normalize()
+    value, vector = pca.get_values()
+    print(la.norm(vector[0]))
+    print(np.dot(vector[0], vector[1]))
     #y = pca.mean()
     #a = pca.normalized_data
     #print('data normalizada:', pca.get_covanciance_matrix())
