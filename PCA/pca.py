@@ -66,9 +66,8 @@ class PCA (object):
         return eigenvalue/np.sum(eigenvalue)
 
     def hotteling_trans(self, comp_number):
-        eigenvalue, eigenvector = self.get_values()
+        _, eigenvector = self.get_values()
         eigenvector = eigenvector[:comp_number]
-        #print(np.transpose(eigenvector))
         trans = []
         for x in self.normalized_data: 
             trans.append(np.dot(eigenvector, x))
