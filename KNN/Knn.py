@@ -17,6 +17,7 @@ class Knn(object):
 
     def set_k(self, k): 
         self.k = k
+   
     def pre_processor(self):
         for traning_set in self.traning_set: 
             train = []
@@ -33,8 +34,8 @@ class Knn(object):
                     else:
                         alt[str(x[i])+str(x[-1])] += 1
                 train.append(alt)
-            self.preprocessing_set.append(train)
-            
+            self.preprocessing_set.append(train)     
+   
     def get_dist(self, inst1, inst2, k): 
         pass 
 
@@ -138,7 +139,6 @@ class Knn(object):
         return sum(acuraccy)/10
     
     def show(self, values, time): 
-        print(values)
         plt.plot(values, time)
         plt.ylabel('Acuraccy')
         plt.xlabel('Processing Time')
@@ -230,11 +230,12 @@ class Knn_misc(Knn_categorical, Knn_numeric):
         return math.sqrt(dist)
     def get_euclidian_disti(self, a, b): 
         return math.sqrt((a-b)**2)
-        
+
+
 def main():
     values = []
     time_all = []
-    k = [1,2,3,5,7,9,11,13,15]
+    k = [1, 3, 5]
     q = 2 #Numero da questao
     knn = None 
     if(q == 1): 

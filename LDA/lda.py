@@ -11,7 +11,7 @@ class LDA(object):
         self.normalized_data = []      # INSTANCIAS SUBTRAIDAS DAS MEDIAS
         self.data_per_class = {}
     
-    # carrega os dados do dataset 
+    # Carrega os dados do dataset 
     def load(self, filename):
         aux = []
         with open(filename, 'r') as dataset: 
@@ -28,7 +28,7 @@ class LDA(object):
                 aux.append(row)
         self.data = np.asarray(aux)
 
-    # divide do dataset em um dicionario por classe 
+    # Divide do dataset em um dicionario por classe 
     def divide_per_class(self):
         aux = {}
         for x in self.all_data: 
@@ -38,7 +38,7 @@ class LDA(object):
                 aux[x[-1]].append(x[:len(x)-1])
         self.data_per_class = aux
     
-    # retorna o vetor medio do dataset 
+    # Retorna o vetor medio do dataset 
     def mean (self):
         mean_vector = []
         size_data = len(self.data)
@@ -49,7 +49,7 @@ class LDA(object):
             mean_vector.append(aux/size_data)
         return mean_vector
 
-    # retorna o vetor medio de cada classe 
+    # Retorna o vetor medio de cada classe 
     def mean_per_class(self):
         mean_vector_per_class = {}
         for x in self.data_per_class: 
@@ -69,7 +69,6 @@ class LDA(object):
             mean_vector_per_class[x] = np.array(aux) 
         return mean_vector_per_class
     
-    # nao sei o que reorna 
     def variance(self):
         size = len(self.data[0]) 
         mean_vector = self.mean_per_class()
@@ -94,6 +93,7 @@ class LDA(object):
             sw += sc
         return sw, sb
     
+    # Retorna os autovalores e vetores ordenados 
     def get_values(self):
         sw, sb = self.variance()
         inverse = la.inv(sw)
@@ -102,19 +102,17 @@ class LDA(object):
         eig_pairs = sorted(eig_pairs, key=lambda k: k[0], reverse=True)
         return eig_pairs
 
+    # Transformacao para diminuir a dimensao do dataset 
     def transf (self, comp_number): 
         eig_pairs = self.get_values()
         eig_vec = [b for a, b in eig_pairs]
         eig_vec = np.array(eig_vec[:comp_number])
-        eig_vec[0].reshape(len(eig_vec[0]), 1)
+        for x in eig_vec:
+            x.reshape(len(eig_vec[0]), 1)
         return np.dot(self.data, eig_vec.real.T)
 
-def main():
-    lda = LDA()
-    lda.load('dataset1-1.csv')
-    lda.divide_per_class()
-    lda.get_values()
-    print(lda.transf(1))
-
-if __name__ == '__main__':
-	main()
+    # Retorna os dados para verificar o desenpenho 
+    def get_data(self, filename, comp_number):
+        self.load(filename)
+        self.divide_per_class()
+        return self.transf(comp_number)

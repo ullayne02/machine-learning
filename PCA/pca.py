@@ -70,25 +70,14 @@ class PCA (object):
         _, eigenvector = self.get_values()
         eigenvector = eigenvector[:comp_number]
         trans = []
-        for x in self.normalized_data: 
+        for x in self.data: 
             trans.append(np.dot(eigenvector, x))
         return trans
-
-def main():
-    pca = PCA ()
-    pca.load('dataset1-1.csv')
-    pca.normalize()
-    _, vector = pca.get_values()
-    print(la.norm(vector[0]))
-    print(np.dot(vector[0], vector[1]))
-    #y = pca.mean()
-    #a = pca.normalized_data
-    #print('data normalizada:', pca.get_covanciance_matrix())
-    #eigenvalue, eigenvector = pca.get_values()
-    pca.hotteling_trans(3)
-    #print('autovalor e autovetor:', pca.get_evr(eigenvalue) )
-
-if __name__ == '__main__':
-	main()
+    
+    # Retorna os dados para verificar o desenpenho 
+    def get_data(self, filename, comp_number):
+        pca = PCA ()
+        pca.load('dataset1-1.csv')        
+        pca.hotteling_trans(3)
 
   
