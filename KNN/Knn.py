@@ -133,8 +133,8 @@ class Knn(object):
         for i in range(len(testing_set)): 
             if(testing_set[i][-1] ==  predictions[i]):
                 c += 1
-        return c/float(len(testing_set))*100.0
-    
+        return c/float(len(testing_set))*100.0 
+
     def get_accuracy_kcros(self, acuraccy):
         return sum(acuraccy)/10
     
@@ -143,7 +143,31 @@ class Knn(object):
         plt.ylabel('Acuraccy')
         plt.xlabel('Processing Time')
         plt.show()
-        
+
+    def get_acuraccy_by_neighbor(self, dataset, target, all_data):
+        # ASSERTS
+        k = [1, 3, 5] 
+        values = []
+        self.split_kcross(dataset, target, all_data)
+        for x in k: 
+            self.set_k(x)
+            acuraccy = []
+            test_set = []
+            train_set = []
+            for i in range(len(self.testing_set)):
+                prediction = []
+                test_set = self.testing_set[i]
+                train_set = self.traning_set[i]            
+                for inst in test_set: 
+                    neighboors = self.get_near_neighboors(inst, train_set, i)
+                    response = self.get_response(neighboors)
+                    prediction.append(response) 
+                a = self.get_accuracy(test_set, prediction)
+                acuraccy.append(a)
+            b = self.get_accuracy_kcros(acuraccy)
+            print(k, b)
+            values.append(b)
+        return (k, values) 
 class Knn_numeric(Knn): 
     def __init__(self, k): 
         super().__init__(k) 
@@ -234,7 +258,7 @@ class Knn_misc(Knn_categorical, Knn_numeric):
 
 def main():
     values = []
-    time_all = []
+    
     k = [1, 3, 5]
     q = 2 #Numero da questao
     knn = None 
@@ -253,7 +277,6 @@ def main():
         acuraccy = []
         test_set = []
         train_set = []
-        start_time = time.time()
         for i in range(len(knn.testing_set)):
             prediction = []
             test_set = knn.testing_set[i]
@@ -265,11 +288,8 @@ def main():
             a = knn.get_accuracy(test_set, prediction)
             acuraccy.append(a)
         b = knn.get_accuracy_kcros(acuraccy)
-        finished_time = time.time()
-        print(k, b, finished_time - start_time)
-        time_all.append((finished_time - start_time))
+        print(k, b)
         values.append(b)
-    knn.show(values, time_all)
 
 if __name__ == '__main__':
 	main()

@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import numpy.linalg as la
 import numpy as np
 import math
@@ -111,8 +112,14 @@ class LDA(object):
             x.reshape(len(eig_vec[0]), 1)
         return np.dot(self.data, eig_vec.real.T)
 
-    # Retorna os dados para verificar o desenpenho 
+    # Retorna os dados para verificar o desempenho 
     def get_data(self, filename, comp_number):
         self.load(filename)
         self.divide_per_class()
-        return self.transf(comp_number)
+        a = list(self.transf(comp_number))
+        all_data = []
+        for i in range(len(a)):
+            aux = list(a[i])
+            aux.append(self.target[i])
+            all_data.append(aux)
+        return (a, self.target, all_data)

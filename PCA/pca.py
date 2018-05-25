@@ -1,4 +1,4 @@
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import numpy.linalg as la
 import numpy as np
 import math
@@ -39,7 +39,7 @@ class PCA (object):
 
         return mean_vec
 
-    #subtrai a media de toda a base de valores 
+    # Subtrai a media de toda a base de valores 
     def normalize(self): 
         mean_vector = self.mean()
         aux = [] 
@@ -48,12 +48,12 @@ class PCA (object):
             aux.append(row)
         self.normalized_data = np.asarray(aux)
 
-    #Retorna a matriz de covariancia 
+    # Retorna a matriz de covariancia 
     def get_covanciance_matrix(self): 
         aux = self.data 
         return np.cov(np.transpose(aux))
     
-    #retornar os autovalores e autovetores ordenado 
+    # Retornar os autovalores e autovetores ordenado 
     def get_values(self): 
         cov = self.get_covanciance_matrix()
         eigenvalue, eigenvector = la.eig(cov)
@@ -76,8 +76,14 @@ class PCA (object):
     
     # Retorna os dados para verificar o desenpenho 
     def get_data(self, filename, comp_number):
-        pca = PCA ()
-        pca.load('dataset1-1.csv')        
-        pca.hotteling_trans(3)
+        self.load(filename) 
+        a = list(self.hotteling_trans(comp_number))
+        all_data = []
+        for i in range(len(a)):
+            aux = list(a[i])
+            aux.append(self.target[i])
+            all_data.append(aux)
+        return (a, self.target, all_data)
+    
 
   
