@@ -5,9 +5,8 @@ from PCA import pca
 def main(): 
     #ASSERTS
     knn_numeric = Knn.Knn_numeric(0)
-    filename = 'dataset1-1.csv'
-    comp_number = 1
-    alg = 'pca'
+    filename = 'data/dataset1-1.csv'
+    comp_number = 1            #Numero de componentes principais
 
     #PCA
     #pca_inst = pca.PCA()
