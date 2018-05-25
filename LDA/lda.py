@@ -67,7 +67,6 @@ class LDA(object):
         
     def variance(self):
         size = len(self.data[0]) 
-        #print(size)
         mean_vector = self.mean_per_class()
         
         mean = np.array(self.mean())
@@ -82,28 +81,29 @@ class LDA(object):
             b = np.transpose(a)
             c = a*b
             sb += c
-            sb = sb * size_data 
             for x in data_aux: 
                 y = np.array(x)
-                normalized = y - mean_aux
-                print(len(normalized))
-                normalized = normalized.reshape(len(normalized), 1)
+                y = y.reshape(len(y), 1)
                 mean_aux = mean_aux.reshape(len(mean_aux), 1)
-                sc += normalized* np.transpose(normalized)
+                normalized = y - mean_aux
+                sc += normalized * np.transpose(normalized)
             sw += sc
         return sw, sb
+    
+    def get_values(self):
+        sw, sb = self.variance()
+        inverse = la.inv(sw)
+        eig_val, eig_vec = la.eig(inverse.dot(sb))
+        eig_pairs = [(np.abs(eig_val[i]), eig_vec[:,i]) for i in range(len(eig_val))]
+        eig_pairs = sorted(eig_pairs, key=lambda k: k[0], reverse=True)
+        return eig_pairs
 
 
-        
 def main():
     lda = LDA()
     lda.load('dataset1-1.csv')
     lda.divide_per_class()
-    #print(lda.mean_per_class())
-    lda.variance()
-    #print(lda.data_per_class)
-    #for x in lda.mean_per_class():
-    #    print(x)
+    lda.get_values()
 
 if __name__ == '__main__':
 	main()
