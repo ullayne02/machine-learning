@@ -16,14 +16,16 @@ class LDA(object):
         aux = []
         with open(filename, 'r') as dataset: 
             data = list(csv.reader(dataset))
+            row_all = []
             row = []
             for inst in data: 
                 inst_class = inst.pop(-1)
                 self.target.append(inst_class)
                 row = [float(x) for x in inst]
+                row_all =  [float(x) for x in inst]
+                row_all.append(inst_class)
+                self.all_data.append(row_all)
                 aux.append(row)
-                row.append(inst_class)
-                self.all_data.append(row)
         self.data = np.asarray(aux)
 
     # divide do dataset em um dicionario por classe 
@@ -36,16 +38,18 @@ class LDA(object):
                 aux[x[-1]].append(x[:len(x)-1])
         self.data_per_class = aux
     
+    # retorna o vetor medio do dataset 
     def mean (self):
         mean_vector = []
         size_data = len(self.data)
-        for x in range(len(self.data[0])- 1 ): 
+        for x in range(len(self.data[0])): 
             aux = 0 
             for y in self.all_data: 
                 aux += y[x]
             mean_vector.append(aux/size_data)
         return mean_vector
 
+    # retorna o vetor medio de cada classe 
     def mean_per_class(self):
         mean_vector_per_class = {}
         for x in self.data_per_class: 
@@ -64,18 +68,18 @@ class LDA(object):
             aux = mean_vector_per_class[x]
             mean_vector_per_class[x] = np.array(aux) 
         return mean_vector_per_class
-        
+    
+    # nao sei o que reorna 
     def variance(self):
         size = len(self.data[0]) 
         mean_vector = self.mean_per_class()
         
         mean = np.array(self.mean())
-        sw = np.zeros((size-1, size-1)) 
-        sc = np.zeros((size-1, size-1))  #matriz de covariancia por classe 
-        sb =np.zeros((size-1, size-1))  
+        sw = np.zeros((size, size)) 
+        sc = np.zeros((size, size))  #matriz de covariancia por classe 
+        sb =np.zeros((size, size))  
         for x in self.target: 
             data_aux = self.data_per_class[x]
-            size_data = len(data_aux)
             mean_aux = np.array(mean_vector[x]) 
             a = mean_aux - mean
             b = np.transpose(a)
@@ -98,12 +102,19 @@ class LDA(object):
         eig_pairs = sorted(eig_pairs, key=lambda k: k[0], reverse=True)
         return eig_pairs
 
+    def transf (self, comp_number): 
+        eig_pairs = self.get_values()
+        eig_vec = [b for a, b in eig_pairs]
+        eig_vec = np.array(eig_vec[:comp_number])
+        eig_vec[0].reshape(len(eig_vec[0]), 1)
+        return np.dot(self.data, eig_vec.real.T)
 
 def main():
     lda = LDA()
     lda.load('dataset1-1.csv')
     lda.divide_per_class()
     lda.get_values()
+    print(lda.transf(1))
 
 if __name__ == '__main__':
 	main()
