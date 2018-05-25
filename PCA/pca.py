@@ -78,7 +78,7 @@ def main():
     pca = PCA ()
     pca.load('dataset1-1.csv')
     pca.normalize()
-    value, vector = pca.get_values()
+    _, vector = pca.get_values()
     print(la.norm(vector[0]))
     print(np.dot(vector[0], vector[1]))
     #y = pca.mean()
