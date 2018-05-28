@@ -146,9 +146,10 @@ class Knn(object):
 
     def get_acuraccy_by_neighbor(self, dataset, target, all_data):
         # ASSERTS
-        k = [1, 3, 5] 
+        k = [1, 3, 5, 7, 9, 20] 
         values = []
         self.split_kcross(dataset, target, all_data)
+        
         for x in k: 
             self.set_k(x)
             acuraccy = []
@@ -168,6 +169,7 @@ class Knn(object):
             print(k, b)
             values.append(b)
         return (k, values) 
+
 class Knn_numeric(Knn): 
     def __init__(self, k): 
         super().__init__(k) 

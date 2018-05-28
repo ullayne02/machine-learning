@@ -51,7 +51,7 @@ class PCA (object):
     # Retorna a matriz de covariancia 
     def get_covanciance_matrix(self): 
         aux = self.normalized_data 
-        return np.cov(np.transpose(aux))
+        return np.cov(np.transpose(aux), bias = True)
     
     # Retornar os autovalores e autovetores ordenado 
     def get_values(self): 
@@ -65,12 +65,16 @@ class PCA (object):
    
     # Retorna a proporcao entre os autovalores
     def get_evr(self, eigenvalue): 
-        return eigenvalue/np.sum(eigenvalue)
+        sun = 0
+        for x in eigenvalue:
+            sun += abs(x)
+        return eigenvalue/sun
     
     # Aplica a transformacao nos dados normalizados
     # para reduzir a dimensionalidade 
     def hotteling_trans(self, comp_number):
-        _, eigenvector = self.get_values()
+        eigenvalue, eigenvector = self.get_values()
+        print(self.get_evr(eigenvalue))
         eigenvector = eigenvector[:comp_number]
         trans = []
         for x in self.normalized_data: 
@@ -80,6 +84,7 @@ class PCA (object):
     # Retorna os dados para verificar o desenpenho 
     def get_data(self, filename, comp_number):
         self.load(filename) 
+        self.normalize()
         a = list(self.hotteling_trans(comp_number))
         all_data = []
         for i in range(len(a)):

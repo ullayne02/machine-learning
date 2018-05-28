@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import numpy.linalg as la
 import numpy as np
 import math
@@ -70,20 +69,28 @@ class LDA(object):
             mean_vector_per_class[x] = np.array(aux) 
         return mean_vector_per_class
     
+    # Retorna a proporcao entre os autovalores
+    def get_evr(self, eigenvalue): 
+        sun = 0
+        for x in eigenvalue:
+            sun += abs(x)
+        return eigenvalue/sun
+
+    # Retorna sw e sb 
     def variance(self):
         size = len(self.data[0]) 
         mean_vector = self.mean_per_class()
         
         mean = np.array(self.mean())
         sw = np.zeros((size, size)) 
-        sc = np.zeros((size, size))  #matriz de covariancia por classe 
-        sb =np.zeros((size, size))  
+        sc = np.zeros((size, size))  
+        sb = np.zeros((size, size))  
         for x in self.target: 
             data_aux = self.data_per_class[x]
             mean_aux = np.array(mean_vector[x]) 
             a = mean_aux - mean
             b = np.transpose(a)
-            c = a*b
+            c = a*b*len(data_aux)
             sb += c
             for x in data_aux: 
                 y = np.array(x)
@@ -107,9 +114,11 @@ class LDA(object):
     def transf (self, comp_number): 
         eig_pairs = self.get_values()
         eig_vec = [b for a, b in eig_pairs]
+        eig_val = [a for a, b in eig_pairs]
         eig_vec = np.array(eig_vec[:comp_number])
         for x in eig_vec:
             x.reshape(len(eig_vec[0]), 1)
+        print(self.get_evr(eig_val))
         return np.dot(self.data, eig_vec.real.T)
 
     # Retorna os dados para verificar o desempenho 
@@ -123,3 +132,8 @@ class LDA(object):
             aux.append(self.target[i])
             all_data.append(aux)
         return (a, self.target, all_data)
+
+#lda = LDA ()
+#lda.load('dataset1-1.csv')
+#lda.divide_per_class()
+#_,sb = lda.variance()
