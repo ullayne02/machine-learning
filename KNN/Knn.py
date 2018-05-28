@@ -258,44 +258,6 @@ class Knn_misc(Knn_categorical, Knn_numeric):
         return math.sqrt((a-b)**2)
 
 
-def main():
-    values = []
-    
-    k = [1, 3, 5]
-    q = 2 #Numero da questao
-    knn = None 
-    if(q == 1): 
-        knn = Knn_numeric(0)
-    elif(q == 2): 
-        knn = Knn_categorical(0)
-    else: 
-        knn = Knn_misc(0)
-    
-    dataset, target, all_data = knn.load('dataset2-2.csv')
-    knn.split_kcross(dataset, target, all_data)
-    knn.pre_processor()
-    for x in k: 
-        knn.set_k(x)
-        acuraccy = []
-        test_set = []
-        train_set = []
-        for i in range(len(knn.testing_set)):
-            prediction = []
-            test_set = knn.testing_set[i]
-            train_set = knn.traning_set[i]            
-            for inst in test_set: 
-                neighboors = knn.get_near_neighboors(inst, train_set, i)
-                response = knn.get_response(neighboors)
-                prediction.append(response) 
-            a = knn.get_accuracy(test_set, prediction)
-            acuraccy.append(a)
-        b = knn.get_accuracy_kcros(acuraccy)
-        print(k, b)
-        values.append(b)
-
-if __name__ == '__main__':
-	main()
-
 
 
    

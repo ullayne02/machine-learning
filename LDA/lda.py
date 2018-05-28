@@ -118,7 +118,6 @@ class LDA(object):
         eig_vec = np.array(eig_vec[:comp_number])
         for x in eig_vec:
             x.reshape(len(eig_vec[0]), 1)
-        print(self.get_evr(eig_val))
         return np.dot(self.data, eig_vec.real.T)
 
     # Retorna os dados para verificar o desempenho 
@@ -133,7 +132,4 @@ class LDA(object):
             all_data.append(aux)
         return (a, self.target, all_data)
 
-#lda = LDA ()
-#lda.load('dataset1-1.csv')
-#lda.divide_per_class()
-#_,sb = lda.variance()
+

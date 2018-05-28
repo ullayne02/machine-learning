@@ -73,8 +73,7 @@ class PCA (object):
     # Aplica a transformacao nos dados normalizados
     # para reduzir a dimensionalidade 
     def hotteling_trans(self, comp_number):
-        eigenvalue, eigenvector = self.get_values()
-        print(self.get_evr(eigenvalue))
+        _, eigenvector = self.get_values()
         eigenvector = eigenvector[:comp_number]
         trans = []
         for x in self.normalized_data: 
